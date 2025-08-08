@@ -37,3 +37,10 @@ A form filling AI app that listens to your conversations and automatically fills
 
 ## Problem It Solves
 Stop filling the same information across multiple forms. Say it once, fill everywhere.
+
+## Tech stacks plan
+AI agents - DSPy
+Insert text - fitz
+Get text coordinates - fitz -> if get text coordinates does not work, might have to just implement fillable fields approach
+backend - fastapi
+Frontend - svelte kit 
