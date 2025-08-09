@@ -1,40 +1,37 @@
-"""Main FastAPI application for I-Fill-Forms hackathon."""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+from app.database import init_db
+from app.api import schemas, sessions, websocket, export
 
-from app.config.settings import settings
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await init_db()
+    yield
+    # Shutdown
 
-# Create FastAPI app
 app = FastAPI(
-    title=settings.api_title,
-    version=settings.api_version,
-    debug=settings.debug,
+    title="I-Fill-Forms API",
+    version="0.1.0",
+    lifespan=lifespan
 )
 
-# Configure CORS
+# CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["*"],  # Configure properly for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    """Root endpoint."""
-    return {"message": "I-Fill-Forms API is running!"}
-
+# Include routers (will be uncommented as we implement them)
+app.include_router(schemas.router, prefix="/api/schemas", tags=["schemas"])
+app.include_router(sessions.router, prefix="/api/sessions", tags=["sessions"])
+app.include_router(websocket.router, tags=["websocket"])
+app.include_router(export.router, prefix="/api/export", tags=["export"])
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
     return {"status": "healthy"}
-
-
-# TODO: Add your API routes here
-# from app.api import pdf, websocket
-# app.include_router(pdf.router, prefix="/api/pdf", tags=["pdf"])
-# app.include_router(websocket.router, prefix="/ws", tags=["websocket"])
