@@ -1,7 +1,35 @@
 [project]
-name = "backend"
+name = "i-fill-forms-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "FastAPI backend for I-Fill-Forms - real-time conversation-based form filling"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn[standard]==0.24.0",
+    "python-multipart==0.0.6",
+    "pandas==2.1.4",
+    "dspy-ai>=2.4.0",
+    "websockets==12.0",
+    "pydantic[email]>=2.5.0",
+    "sqlalchemy>=2.0.31",
+    "aiosqlite==0.19.0",
+    "python-dotenv==1.0.0",
+    "httpx==0.25.2",
+    "qdrant-client>=1.12.1",
+    "pydantic-settings>=2.2.1",
+    "mem0ai>=0.1.115",
+    "groq>=0.31.0",
+    "orjson>=3.11.1",
+    "apscheduler>=3.11.0",
+    "fastapi-sso>=0.18.0",
+    "pyaudio>=0.2.14",
+    "litellm-enterprise>=0.1.19",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.3",
+    "pytest-asyncio==0.21.1",
+    "httpx==0.25.2",
+]
