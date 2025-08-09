@@ -67,6 +67,20 @@ class ConnectionManager:
                     await connection.send_text(msg)
                 except Exception as e:
                     logger.warning(f"[{datetime.now().isoformat()}] Failed to send status: {str(e)}")
+    
+    async def send_transcription(self, session_id: str, text: str):
+        """Send transcribed text to frontend for display"""
+        if session_id in self.active_connections:
+            message = json.dumps({
+                "type": "transcription",
+                "text": text,
+                "timestamp": datetime.now().isoformat()
+            })
+            for connection in self.active_connections[session_id]:
+                try:
+                    await connection.send_text(message)
+                except Exception as e:
+                    logger.warning(f"Failed to send transcription: {str(e)}")
 
 manager = ConnectionManager()
 
@@ -157,6 +171,9 @@ async def process_audio_chunk(session_id: str, audio_data: str, fields: List[str
     
     logger.info(f"🎤 TRANSCRIPTION: '{text}'")
     
+    # Send transcription to frontend for display
+    await manager.send_transcription(session_id, text)
+    
     # Get conversation memory from Mem0
     mem0_service = Mem0MemoryService()
     context = await mem0_service.get_relevant_context(text, str(session_id))
@@ -240,6 +257,9 @@ async def process_audio_chunk(session_id: str, audio_data: str, fields: List[str
 
 async def process_text_chunk(session_id: str, text: str, fields: List[str]):
     """Process text through intelligent agent and send immediate field updates"""
+    # Send the text input as transcription for consistency
+    await manager.send_transcription(session_id, text)
+    
     # Get conversation memory from Mem0
     mem0_service = Mem0MemoryService()
     context = await mem0_service.get_relevant_context(text, str(session_id))
