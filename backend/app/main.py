@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import init_db
-from app.api import schemas, sessions, websocket, export
+from app.api import schemas, sessions, websocket, export, audio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,6 +31,7 @@ app.include_router(schemas.router, prefix="/api/schemas", tags=["schemas"])
 app.include_router(sessions.router, prefix="/api/sessions", tags=["sessions"])
 app.include_router(websocket.router, tags=["websocket"])
 app.include_router(export.router, prefix="/api/export", tags=["export"])
+app.include_router(audio.router, prefix="/api/audio", tags=["audio"])
 
 @app.get("/health")
 async def health_check():

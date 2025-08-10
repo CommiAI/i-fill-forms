@@ -106,17 +106,41 @@ async def websocket_session(websocket: WebSocket, session_id: str):
         
         packet_count = 0
         while True:
-            # Receive data from frontend
-            data = await websocket.receive_text()
+            # Receive raw message and handle both text and binary
+            ws_msg = await websocket.receive()
             packet_count += 1
             
-            # Log raw packet received
-            logger.info(f"\n{'='*80}")
-            logger.info(f"[{datetime.now().isoformat()}] PACKET #{packet_count} RECEIVED!")
-            logger.info(f"Session ID: {session_id}")
-            logger.info(f"Raw data length: {len(data)} bytes")
+            if ws_msg["type"] == "websocket.disconnect":
+                logger.info(f"[{datetime.now().isoformat()}] Client disconnected")
+                break
             
-            message = json.loads(data)
+            # Handle text messages (JSON)
+            if "text" in ws_msg:
+                data = ws_msg["text"]
+                logger.info(f"\n{'='*80}")
+                logger.info(f"[{datetime.now().isoformat()}] PACKET #{packet_count} RECEIVED!")
+                logger.info(f"Session ID: {session_id}")
+                logger.info(f"Raw text data length: {len(data)} bytes")
+                
+                message = json.loads(data)
+            # Handle binary data
+            elif "bytes" in ws_msg:
+                audio_bytes = ws_msg["bytes"]
+                logger.info(f"\n{'='*80}")
+                logger.info(f"[{datetime.now().isoformat()}] PACKET #{packet_count} RECEIVED!")
+                logger.info(f"Session ID: {session_id}")
+                logger.info(f"Binary audio data: {len(audio_bytes)} bytes")
+                logger.info(f"Processing binary audio chunk...")
+                
+                # Convert to base64 for existing process_audio_chunk function
+                import base64
+                audio_base64 = base64.b64encode(audio_bytes).decode('utf-8')
+                await process_audio_chunk(session_id, audio_base64, schema.fields)
+                logger.info(f"{'='*80}\n")
+                continue
+            else:
+                logger.warning(f"Unexpected message format: {ws_msg.keys()}")
+                continue
             
             # Log parsed message details
             logger.info(f"Message type: {message.get('type', 'UNKNOWN')}")
