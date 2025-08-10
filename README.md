@@ -1,9 +1,9 @@
-# I-Fill-Forms Backend
+# I-Fill-Forms
 
 ## Quick Setup
 
 ### Prerequisites
-- Python 3.11+
+- Python 3.12+
 - Docker & Docker Compose (for Qdrant vector database)
 
 ### Installation
@@ -20,13 +20,15 @@ python -m venv venv
 venv\Scripts\activate
 # On Mac/Linux
 source venv/bin/activate
+# Or using uv
+uv init
 ```
 
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 # OR if using uv
-uv pip install -e .
+uv sync
 ```
 
 4. Set up environment variables:
@@ -43,18 +45,11 @@ docker-compose up -d
 
 6. Run the backend:
 ```bash
-uvicorn app.main:app --reload --port 8000
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 The API will be available at http://localhost:8000
 API docs at http://localhost:8000/docs
-
-## API Endpoints
-
-- `POST /api/schemas/upload` - Upload form schema (PDF/CSV)
-- `POST /api/sessions/create` - Create new form-filling session
-- `WS /ws/{session_id}` - WebSocket for real-time form filling
-- `POST /api/export/{session_id}` - Export filled form data
 
 ## Stopping Services
 
