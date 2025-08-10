@@ -32,7 +32,7 @@ class IntelligentExtractor(dspy.Module):
     def __init__(self):
         # Configure DSPy to use Groq LLM for agent reasoning
         groq_lm = dspy.LM(
-            "qwen/qwen3-32b", 
+            "llama-3.3-70b-versatile", 
             api_key=settings.groq_api_key,
             api_base="https://api.groq.com/openai/v1"
         )

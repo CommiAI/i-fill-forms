@@ -1,12 +1,17 @@
 {
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:console.groq.com)",
+      "WebFetch(domain:cookbook.openai.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:dspy.ai)"
+    ]
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "github",
     "context7"
-  ],
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:console.groq.com)"
-    ]
-  }
+  ]
 }
